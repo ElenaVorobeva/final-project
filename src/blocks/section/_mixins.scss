@@ -1,0 +1,21 @@
+$colors: (
+  'dark-blue': #3466af,
+  'red': #ed5564,
+  'yellow': #ffcb05,
+  'grey': #e6e9ed,
+  'black': #434a54,
+);
+
+@mixin flex($direction) {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: $direction;
+}
+
+@mixin cardsFlex() {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 205px);
+  justify-content: space-around;
+  grid-gap: 20px;
+}

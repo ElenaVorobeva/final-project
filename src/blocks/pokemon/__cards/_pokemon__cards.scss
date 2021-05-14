@@ -1,0 +1,13 @@
+@import '../../section/mixins';
+
+.pokemon__cards {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+
+  font-family: 'pokemon';
+  color: map-get($colors, 'yellow');
+  font-size: 25px;
+  letter-spacing: 3px;
+  @include cardsFlex();
+}

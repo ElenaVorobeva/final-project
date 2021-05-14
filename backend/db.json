@@ -1,6 +1,5 @@
-{
-  "pokemons": [
-    {
+
+   [ {
       "name": "bulbasaur",
       "id": 1
     },
@@ -766,7 +765,7 @@
     },
     {
       "name": "sunflora",
-      "id": 192
+      "id": 192 
     },
     {
       "name": "yanma",
@@ -3797,4 +3796,3 @@
       "id": 10147
     }
   ]
-}
