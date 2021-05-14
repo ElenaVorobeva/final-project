@@ -1,0 +1,10 @@
+@import '../../section/mixins';
+
+.pokemon__card {
+  width: 210px;
+  height: 280px;
+  perspective: 600px;
+  position: relative;
+
+  @include flex(column);
+}

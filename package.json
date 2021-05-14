@@ -1,0 +1,59 @@
+{
+  "name": "pokedex",
+  "version": "1.0.0",
+  "description": "This is a mini-app to catch pokemons.",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env webpack serve --mode development --open --hot",
+    "build": "rm -rf dist && webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElenaVorobeva/final-project.git"
+  },
+  "author": "Elena Vorobeva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElenaVorobeva/final-project/issues"
+  },
+  "homepage": "https://github.com/ElenaVorobeva/final-project#readme",
+  "devDependencies": {
+    "@babel/core": "^7.14.2",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "@reduxjs/toolkit": "^1.5.1",
+    "axios": "^0.21.1",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "bootstrap": "^5.0.1",
+    "core-js": "^3.12.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.4",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "moment": "^2.29.1",
+    "postcss": "^8.2.15",
+    "postcss-loader": "^3.0.0",
+    "regenerator-runtime": "^0.13.7",
+    "sass": "^1.32.13",
+    "sass-loader": "^11.1.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "html-loader": "^2.1.2",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1",
+    "precss": "^4.0.0",
+    "react": "^17.0.2",
+    "react-bootstrap": "^1.6.0",
+    "react-dom": "^17.0.2",
+    "react-paginate": "^7.1.2",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0"
+  }
+}

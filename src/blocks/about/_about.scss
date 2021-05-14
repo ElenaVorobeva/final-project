@@ -1,0 +1,31 @@
+@import './__image/about__image';
+@import './__image-bg/about__image-bg';
+@import './__photo/about__photo';
+@import './__title/about__title';
+
+.about {
+  margin: 0 auto;
+  padding: 15px 20px;
+  width: 70%;
+  border: 10px map-get($colors, 'black') solid;
+  border-radius: 20px;
+  background-color: map-get($colors, 'grey');
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  position: relative;
+}
+
+@media screen and (max-width: 1201px) {
+  .about {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 821px) {
+  .about {
+    flex-direction: column;
+  }
+}
