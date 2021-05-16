@@ -4,6 +4,8 @@ $colors: (
   'yellow': #ffcb05,
   'grey': #e6e9ed,
   'black': #434a54,
+  'dark-grey': #898b8e,
+  'transparent': transparent,
 );
 
 @mixin flex($direction) {

@@ -1,75 +1,66 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadPokemons, catchPokemon, handleCaughtPokemon } from '../store/pokemons';
-import { paginate } from '../utils/paginate';
 import ReactPaginate from 'react-paginate';
 import Loading from './common/Loading.jsx';
 import IP from '../utils/constatns';
+import { handleDispatch, aboutPokemon, handlePokemonImage, handlePokemonImageError } from '../utils/pokemonLinks';
 
 class Pokemons extends React.Component {
 
   constructor(props) {
     super();
     this.state = {
-      currentPage: 1,
+      currentPage: 0,
       pageSize: 20,
     };
     this.props = props;
   }
 
   componentDidMount = () => {
-    this.props.dispatch(loadPokemons());
+    handleDispatch(this.props, loadPokemons(this.state.currentPage, this.state.pageSize));
   }
 
   handlePageChange = page => {
-    this.setState({ currentPage: page.selected + 1});
-  }
+    const newPage = page.selected + 1;
+    const start = (newPage - 1) * this.state.pageSize;
+    const end = start + this.state.pageSize;
+    this.setState({ currentPage: newPage - 1})
 
+    handleDispatch(this.props, loadPokemons(start, end));
+  };
 
   handleCatchButton = (pokemon) => {
-    this.props.dispatch(catchPokemon(pokemon));
-    this.props.dispatch(handleCaughtPokemon(pokemon));
+    handleDispatch(this.props, catchPokemon(pokemon))
+    handleDispatch(this.props, handleCaughtPokemon(pokemon))
 }
 
-  handlePokemonImage = id => {
-    return `http://${IP}:9002/images/${id}.png`;
-  }
-
-  handlePokemonImageError = (e) => {
-    e.target.src = `http://${IP}:9002/images/QM.svg`;
-  }
-
   render() {
+    const { currentPage, pageSize } = this.state;
+    const { pokemons, loading, totalCount } = this.props;
 
-    if (this.props.loading) return <Loading />
-    if (this.props.pokemons.length === 0) return <p>No pokemons in the database.</p>
-
-    const storedPokemons = this.props.pokemons;
-
-    const { pageSize, currentPage } = this.state;
-    const pokemons = paginate(storedPokemons, currentPage, pageSize);
-
-    const aboutPokemon = (id) => `http://${IP}:3000/pokemons/${id}`
+    if (loading) return <Loading />
+    if (pokemons.length === 0) return <p className="m-3" aria-label="Message">No pokemons in the database.</p>
 
     return (
       <React.Fragment>
-        <section className='pokemon mt-3'>
+        <section className='pokemon mt-3' aria-label="Pokemon cards">
         <h1>Pokemons</h1>
           <div className="pokemon__cards mb-5">
             {pokemons.map((pokemon, index) => (
-              <div key={index} className="pokemon__card">
+              <div key={index} className="pokemon__card" aria-label={pokemon.name}>
                 <div className={pokemon.isCaught ? 'pokemon__inner pokemon__rotate' : 'pokemon__inner'}>
                 <div className='pokemon__front' style={{backgroundImage: `url(http://${IP}:9002/images/pokeball1.svg)`}}>
-                    <img className="pokemon__image" src={this.handlePokemonImage(pokemon.id)} alt="Pokemon" onError={this.handlePokemonImageError}/>
+                    <img className="pokemon__image" src={handlePokemonImage(pokemon.id)} alt="Pokemon" onError={handlePokemonImageError}/>
                     <div className="pokemon__top">
                       <p className="pokemon__name">{pokemon.name}</p>
-                      <button className='btn btn-danger pokemon__btn pokemon__btn_hover' onClick={() => this.handleCatchButton(pokemon)}>Catch</button>
+                      <button className='btn btn-danger pokemon__btn pokemon__btn_hover' disabled={pokemon.isCaught} onClick={() => this.handleCatchButton(pokemon)}>Catch</button>
                     </div>
                     <a className="pokemon__link" target="_blank" href={aboutPokemon(pokemon.id)}></a>
                 </div>
 
                   <div className="pokemon__back" style={{backgroundImage: `url(http://${IP}:9002/images/pokeball1.svg)`}}>
-                    <img className="pokemon__image" src={this.handlePokemonImage(pokemon.id)} alt="Pokemon" onError={this.handlePokemonImageError}/>
+                    <img className="pokemon__image" src={handlePokemonImage(pokemon.id)} alt="Pokemon" onError={handlePokemonImageError}/>
                     <div className="pokemon__top">
                       <p className="pokemon__name">{pokemon.name}</p>
                       <button className='btn btn-danger pokemon__btn pokemon__btn_disabled' disabled>Caught</button>
@@ -81,17 +72,15 @@ class Pokemons extends React.Component {
             ))}
       </div>
 
-
-
-
-      <nav className="mx-auto">
+      <nav className="mx-auto" aria-label="Navigation">
       <ReactPaginate
-        pageCount={Math.ceil(this.props.pokemons.length / this.state.pageSize)}
+        pageCount={Math.ceil(totalCount / pageSize)}
         pageRangeDisplayed={5}
         marginPagesDisplayed={2}
         previousLabel={'<'}
         nextLabel={'>'}
         onPageChange={this.handlePageChange}
+        forcePage={currentPage}
 
         breakClassName='page-item'
         breakLinkClassName='page-link'
@@ -116,8 +105,8 @@ class Pokemons extends React.Component {
 const mapStateToProps = function(state) {
   return {
     pokemons: state.entities.pokemons.list,
-    caught: state.entities.pokemons.caught,
     loading: state.entities.pokemons.loading,
+    totalCount: state.entities.pokemons.totalCount
   }
 }
  
