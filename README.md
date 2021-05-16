@@ -10,3 +10,4 @@ How to use it:
 2. Go to './src/utils/constants' and change ip address to your ip address
 3. Go to backend folder and run 'npm i' and then 'npm start' (starts json server)
 4. Go back to root folder and run 'npm i' and then 'npm start' again (starts the app)
+5. Now you can access it from both your pc and your mobile phone (http://your-ip:3000/pokemons)
