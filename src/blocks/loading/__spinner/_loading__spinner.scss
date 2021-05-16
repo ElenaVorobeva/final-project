@@ -1,0 +1,5 @@
+@import '../../section/mixins';
+
+.loading__spinner {
+  color: map-get($colors, 'black') !important;
+}

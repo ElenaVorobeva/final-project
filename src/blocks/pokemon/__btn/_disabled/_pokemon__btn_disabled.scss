@@ -1,4 +1,6 @@
+@import '../../../section/mixins';
+
 .pokemon__btn_disabled {
-  background-color: #898b8e !important;
-  border-color: #898b8e !important;
+  background-color: map-get($colors, 'dark-grey') !important;
+  border-color: map-get($colors, 'dark-grey') !important;
 }

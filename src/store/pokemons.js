@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { apiCallBegan } from './api';
-import moment from 'moment';
 
 const slice = createSlice({
   name: 'pokemons',
@@ -8,6 +7,9 @@ const slice = createSlice({
   initialState: {
     list: [],
     caught: [],
+    pokemon: [],
+    totalCount: 0,
+    totalCountCaught: 0,
     loading: false,
     lastFetch: null,
     catchPokemonLoading: false,
@@ -27,6 +29,7 @@ const slice = createSlice({
       pokemons.list = action.payload;
       pokemons.loading = false;
       pokemons.lastFetch = Date.now();
+      pokemons.totalCount = action.headers['x-total-count'];
     },
 
     pokemonsRequestFailed: pokemons => {
@@ -40,6 +43,7 @@ const slice = createSlice({
     caughtPokemonsRecieved: (pokemons, action) => {
       pokemons.caught = action.payload;
       pokemons.loading = false;
+      pokemons.totalCountCaught = action.headers['x-total-count'];
     },
 
     caughtPokemonsRequestFailed: pokemons => {
@@ -67,13 +71,27 @@ const slice = createSlice({
       pokemons.handleCatchingPokemon = true;
     },
 
-    CaughtPokemonHandled: (pokemons, action) => {
+    caughtPokemonHandled: (pokemons, action) => {
       pokemons.handleCatchingPokemon = false;
       pokemons.caught.push(action.payload);
     },
 
     handleCaughtPokemonFailed: pokemons => {
       pokemons.catchPokemonLoading = false;
+    },
+
+    getPokemonRequested: pokemons => {
+      pokemons.loading = true;
+    },
+
+    getPokemonRecieved: (pokemons, action) => {
+      pokemons.loading = false;
+
+      pokemons.pokemon = action.payload;
+    },
+
+    getPokemonFailed: pokemons => {
+      pokemons.loading = false;
     },
   },
 });
@@ -89,23 +107,21 @@ const {
   pokemonCaught,
   catchPokemonFailed,
   handleCaughtPokemonRequested,
-  CaughtPokemonHandled,
+  caughtPokemonHandled,
   handleCaughtPokemonFailed,
+  getPokemonRequested,
+  getPokemonRecieved,
+  getPokemonFailed,
 } = slice.actions;
 export default slice.reducer;
 
-const url = '/api/pokemons';
-const caughtPokemonsUrl = 'api/caughtPokemons';
+const url = '/pokemons';
+const caughtPokemonsUrl = '/caughtpokemons';
 
-export const loadPokemons = () => (dispatch, getState) => {
-  const { lastFetch } = getState().entities.pokemons;
-
-  const diffInMinutes = moment().diff(moment(lastFetch), 'minutes');
-  if (diffInMinutes < 10) return;
-
+export const loadPokemons = (start, end) => (dispatch, getState) => {
   dispatch(
     apiCallBegan({
-      url,
+      url: url + `?_start=${start}&_end=${end}`,
       onStart: pokemonsRequested.type,
       onSuccess: pokemonsRecieved.type,
       onError: pokemonsRequestFailed.type,
@@ -113,10 +129,10 @@ export const loadPokemons = () => (dispatch, getState) => {
   );
 };
 
-export const loadCaughtPokemons = () => (dispatch, getState) => {
+export const loadCaughtPokemons = (start, end) => (dispatch, getState) => {
   dispatch(
     apiCallBegan({
-      url: caughtPokemonsUrl,
+      url: caughtPokemonsUrl + `?_start=${start}&_end=${end}`,
       onStart: caughtPokemonsRequested.type,
       onSuccess: caughtPokemonsRecieved.type,
       onError: caughtPokemonsRequestFailed.type,
@@ -131,13 +147,13 @@ export const handleCaughtPokemon = pokemon => dispatch => {
       method: 'post',
       data: pokemon,
       onStart: handleCaughtPokemonRequested.type,
-      onSuccess: CaughtPokemonHandled.type,
+      onSuccess: caughtPokemonHandled.type,
       onError: handleCaughtPokemonFailed.type,
     })
   );
 };
 
-export const catchPokemon = pokemon => (dispatch, getState) => {
+export const catchPokemon = pokemon => dispatch => {
   const options = {
     year: 'numeric',
     month: 'long',
@@ -157,6 +173,17 @@ export const catchPokemon = pokemon => (dispatch, getState) => {
       onStart: catchPokemonRequested.type,
       onSuccess: pokemonCaught.type,
       onError: catchPokemonFailed.type,
+    })
+  );
+};
+
+export const getPokemon = id => dispatch => {
+  dispatch(
+    apiCallBegan({
+      url: url + `/${id}`,
+      onStart: getPokemonRequested.type,
+      onSuccess: getPokemonRecieved.type,
+      onError: getPokemonFailed.type,
     })
   );
 };

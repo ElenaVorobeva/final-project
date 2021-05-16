@@ -6,11 +6,11 @@
   padding: 4px 70px !important;
   background-color: map-get($colors, 'red') !important;
   border-color: map-get($colors, 'red') !important;
-  z-index: 2;
   font-size: 15px !important;
 
   position: absolute;
   left: 50%;
   bottom: -6px;
   transform: translate(-50%, -50%);
+  z-index: 10;
 }

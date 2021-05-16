@@ -1,7 +1,11 @@
 @import './__img/loading__img';
 @import './__text/loading__text';
+@import './__spinner/loading__spinner';
+
+@import '../section/mixins';
 
 .loading {
   width: 100%;
   height: calc(100vh - 56px);
+  color: map-get($colors, 'black');
 }

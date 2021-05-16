@@ -1,60 +1,37 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { loadPokemons } from '../store/pokemons';
+import { getPokemon } from '../store/pokemons';
 import Loading from './common/Loading.jsx';
 
 import IP from '../utils/constatns';
-
+import { handleDispatch, handleName, handleAboutImage } from '../utils/pokemonLinks';
 
 const Pokemon = (props) => {
   let { id } = useParams();
   id = Number(id);
 
   useEffect(() => {
-    props.dispatch(loadPokemons());
+    handleDispatch(props, getPokemon(id))
   }, [])
 
+  const { pokemon, loading } = props;
 
-  const pokemons = props.pokemons;
-
-  let pokemon = pokemons.filter(item => item.id === id);
-  pokemon = pokemon[0];
-
-
-  const handleName = () => {
-    const name = pokemon.name.split('');
-    name.splice(0, 1, name[0].toUpperCase()).join();
-
-    return name;
-  }
-
-  const handlePokemonImage = () => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('HEAD', `http://${IP}:9002/images/${id}.png`, false);
-    xhr.send();
-
-    if (xhr.status == "404") {
-        return `http://${IP}:9002/images/QM.svg`;
-    } else {
-        return `http://${IP}:9002/images/${id}.png`;
-    }
-  }
-
-  {if (props.loading) return <Loading />}
-  {if (!props.pokemons.find(pokemon => pokemon.id === id) || !props.pokemons.length) return <p>No such pokemon in the database.</p>}
+  {if (loading) return <Loading />}
+  {if (!pokemon.id) return <p className="m-3" aria-label="Message">No such pokemon in the database.</p>}
 
   return (
     <React.Fragment>
-      <section className="about mt-5">
+      <section className="about my-5" aria-label={pokemon.name}>
       <div className="about__image-bg" style={{backgroundImage: `url(http://${IP}:9002/images/pokeball.svg)`}}></div>
         <div className="about__info mt-5">
-          <h1 className="about__title mb-4">{handleName()}</h1>
-          <p className="about__status">Status: {pokemon.isCaught ? 'Caught' : 'Free'}</p>
-          <p className="about__time">{pokemon.isCaught ? 'Caught: ' + pokemon.catchTime : ''}</p>
+          <h1 className="about__title mb-4">{handleName(pokemon)}</h1>
+          <p aria-label="ID" className="about__id">ID: {pokemon.id}</p>
+          <p aria-label="Status" className="about__status">Status: {pokemon.isCaught ? 'Caught' : 'Free'}</p>
+          <p aria-label="Catch time" className="about__time">{pokemon.isCaught ? 'Caught: ' + pokemon.catchTime : ''}</p>
         </div>
-        <div className="about__image">
-          <img src={handlePokemonImage()} alt="Pokemon" className="about__photo"/>
+        <div className="about__image" aria-label={'Image of ' + pokemon.name}>
+          <img src={handleAboutImage(id)} alt={pokemon.name} className="about__photo"/>
         </div>
       </section>
     </React.Fragment>
@@ -63,7 +40,7 @@ const Pokemon = (props) => {
  
 const mapStateToProps = function(state) {
   return {
-    pokemons: state.entities.pokemons.list,
+    pokemon: state.entities.pokemons.pokemon,
     loading: state.entities.pokemons.loading
   }
 }
