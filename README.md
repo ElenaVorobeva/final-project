@@ -1,5 +1,7 @@
 # pokedex
 
+v.1.0.0
+
 This is a mini-app to catch pokemons.
 
 How to use it:
