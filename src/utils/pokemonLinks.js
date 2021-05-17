@@ -21,7 +21,7 @@ export const handleName = pokemon => {
 
 export const handleAboutImage = id => {
   const xhr = new XMLHttpRequest();
-  xhr.open('HEAD', `http://${IP}:9002/images/${id}.png`, true);
+  xhr.open('HEAD', `http://${IP}:9002/images/${id}.png`, false);
   xhr.send();
 
   if (xhr.status == '404') {
